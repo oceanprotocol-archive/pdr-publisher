@@ -6,8 +6,9 @@ then
     sleep 2
   done
 fi
+sleep 10
 cd /pdr-publisher/ocean.py/
 echo "Starting app..."
-python3 publish.py 2>&1 &
+python3 -u publish.py
 tail -f /dev/null
 
