@@ -1,8 +1,8 @@
 #!/bin/bash
 if [ "${WAIT_FOR_CONTRACTS}" = "true" ]
 then
+  echo "Waiting for contracts to be ready...."
   while [ ! -f "/root/.ocean/ocean-contracts/artifacts/ready" ]; do
-    echo "Waiting for contracts to be ready...."
     sleep 2
   done
 fi
