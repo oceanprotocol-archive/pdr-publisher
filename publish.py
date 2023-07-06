@@ -28,7 +28,7 @@ OCEAN.transfer(trader.address, to_wei(2000.0), {"from": deployer})
 
 #create NFT
 print("Creating NFT...")
-data_nft = ocean.data_nft_factory.create({"from": deployer}, "DN", "DN")
+
 S_PER_MIN = 60
 S_PER_HOUR = 60 * 60
 # for our ganache, have one epoch per minute (every 60 blocks)
@@ -39,9 +39,10 @@ min_predns_for_payout = 3  # ideally, 100+
 stake_token = OCEAN
 DT_price = 2
 
-#create template3
+#1st pair:  ETH-USDT on Kraken, 5m
+data_nft = ocean.data_nft_factory.create({"from": deployer}, "ETH-USDT-Kraken-5m", "ETH-USDT")
 initial_list = data_nft.getTokensList()
-print("Creating template3 datatoken...")
+print("Creating BTC-TUSD-Binance-5m...")
 data_nft.createERC20(
         3,
         ["ETH-USDT", "ETH-USDT"],
@@ -58,9 +59,62 @@ DT = DatatokenBase.get_typed(config, new_elements[0])
 print("Setting fixed price exchange")
 DT.setup_exchange({"from": deployer}, to_wei(DT_price))
 print("Setting key/values")
-data_nft.set_data("pair", "eth-usd", {"from": deployer})
+data_nft.set_data("pair", "eth-usdt", {"from": deployer})
 data_nft.set_data("base", "eth", {"from": deployer})
-data_nft.set_data("quote", "usd", {"from": deployer})
+data_nft.set_data("quote", "usdt", {"from": deployer})
 data_nft.set_data("source", "kraken", {"from": deployer})
+data_nft.set_data("timeframe", "5m", {"from": deployer})
+
+
+#2nd pair:  BTC-TUSD on Binance, 5m
+data_nft = ocean.data_nft_factory.create({"from": deployer}, "BTC-TUSD-Binance-5m", "BTC-TUSD")
+initial_list = data_nft.getTokensList()
+print("Creating BTC-TUSD-Binance-5m...")
+data_nft.createERC20(
+        3,
+        ["BTC-TUSD", "BTC-TUSD"],
+        [deployer.address, deployer.address, deployer.address, OCEAN.address, OCEAN.address],
+        [MAX_UINT256, 0, s_per_block, s_per_epoch, s_per_subscription, 30],
+        [],
+        {"from": deployer},
+    )
+new_elements = [
+        item for item in data_nft.getTokensList() if item not in initial_list
+    ]
+assert len(new_elements) == 1, "new datatoken has no address"
+DT = DatatokenBase.get_typed(config, new_elements[0])
+#print("Setting fixed price exchange")
+DT.setup_exchange({"from": deployer}, to_wei(DT_price))
+#print("Setting key/values")
+data_nft.set_data("pair", "btc-tusd", {"from": deployer})
+data_nft.set_data("base", "btc", {"from": deployer})
+data_nft.set_data("quote", "tusd", {"from": deployer})
+data_nft.set_data("source", "binance", {"from": deployer})
+data_nft.set_data("timeframe", "5m", {"from": deployer})
+
+#3rd pair:  XRP-USDT on Binance, 5m
+data_nft = ocean.data_nft_factory.create({"from": deployer}, "XRP-USDT-Binance-5m", "XRP-USDT")
+initial_list = data_nft.getTokensList()
+print("Creating XRP-USDT-Binance-5m...")
+data_nft.createERC20(
+        3,
+        ["XRP-USDT", "XRP-USDT"],
+        [deployer.address, deployer.address, deployer.address, OCEAN.address, OCEAN.address],
+        [MAX_UINT256, 0, s_per_block, s_per_epoch, s_per_subscription, 30],
+        [],
+        {"from": deployer},
+    )
+new_elements = [
+        item for item in data_nft.getTokensList() if item not in initial_list
+    ]
+assert len(new_elements) == 1, "new datatoken has no address"
+DT = DatatokenBase.get_typed(config, new_elements[0])
+#print("Setting fixed price exchange")
+DT.setup_exchange({"from": deployer}, to_wei(DT_price))
+#print("Setting key/values")
+data_nft.set_data("pair", "xrp-tusd", {"from": deployer})
+data_nft.set_data("base", "xrp", {"from": deployer})
+data_nft.set_data("quote", "usdt", {"from": deployer})
+data_nft.set_data("source", "binance", {"from": deployer})
 data_nft.set_data("timeframe", "5m", {"from": deployer})
 print("Done")
