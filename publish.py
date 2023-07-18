@@ -11,6 +11,7 @@ from ocean_lib.web3_internal.constants import ZERO_ADDRESS, MAX_UINT256
 deployer = br_accounts.add(os.getenv("OPF_DEPLOYER_PRIVATE_KEY"))
 predictoor = br_accounts.add(os.getenv("PREDICTOOR_PRIVATE_KEY"))
 trader = br_accounts.add(os.getenv("TRADER_PRIVATE_KEY"))
+dfbuyer = br_accounts.add(os.getenv("DFBUYER_PRIVATE_KEY"))
 connect_to_network("development")
 ADDRESS_FILE = "~/.ocean/ocean-contracts/artifacts/address.json"
 address_file = os.path.expanduser(ADDRESS_FILE)
@@ -25,6 +26,8 @@ print("Sending Ocean to predictoor")
 OCEAN.transfer(predictoor.address, to_wei(2000.0), {"from": deployer})
 print("Sending Ocean to trader")
 OCEAN.transfer(trader.address, to_wei(2000.0), {"from": deployer})
+print("Sending Ocean to dfbuyer")
+OCEAN.transfer(dfbuyer.address, to_wei(10000.0), {"from": deployer})
 
 #create NFT
 print("Creating NFT...")
