@@ -28,6 +28,14 @@ if "PREDICTOOR_PRIVATE_KEY" in os.environ:
     predictoor = br_accounts.add(os.getenv("PREDICTOOR_PRIVATE_KEY"))
     print("Sending Ocean to predictoor")
     OCEAN.transfer(predictoor.address, to_wei(2000.0), {"from": deployer})
+if "PREDICTOOR2_PRIVATE_KEY" in os.environ:
+    predictoor = br_accounts.add(os.getenv("PREDICTOOR2_PRIVATE_KEY"))
+    print("Sending Ocean to predictoor2")
+    OCEAN.transfer(predictoor.address, to_wei(2000.0), {"from": deployer})
+if "PREDICTOOR3_PRIVATE_KEY" in os.environ:
+    predictoor = br_accounts.add(os.getenv("PREDICTOOR3_PRIVATE_KEY"))
+    print("Sending Ocean to predictoor3")
+    OCEAN.transfer(predictoor.address, to_wei(2000.0), {"from": deployer})
 
 if "TRADER_PRIVATE_KEY" in os.environ:
     trader = br_accounts.add(os.getenv("TRADER_PRIVATE_KEY"))
