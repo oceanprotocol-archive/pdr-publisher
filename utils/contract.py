@@ -41,9 +41,9 @@ class Web3Config:
             self.account: LocalAccount = Account.from_key(private_key)
             self.owner = self.account.address
             self.private_key = private_key
-#            self.w3.middleware_onion.add(
-#                construct_sign_and_send_raw_middleware(self.account)
-#            )
+            self.w3.middleware_onion.add(
+                construct_sign_and_send_raw_middleware(self.account)
+            )
 
 class ERC721Factory:
     def __init__(self, config: Web3Config,chain_id=None):
@@ -60,18 +60,18 @@ class ERC721Factory:
         self.config = config
     
     def createNftWithErc20WithFixedRate(self,NftCreateData, ErcCreateData,FixedData):
-            gasPrice = self.config.w3.eth.gas_price
+#            gasPrice = self.config.w3.eth.gas_price
             call_params = {
                 "from": self.config.owner,
-                "gasPrice": gasPrice,
-                #                    'nonce': self.config.w3.eth.get_transaction_count(self.config.owner),
+                "gasPrice": 100000000000,
             }
-
 
             tx = self.contract_instance.functions.createNftWithErc20WithFixedRate(
                 NftCreateData, ErcCreateData,FixedData
             ).transact(call_params)
             receipt = self.config.w3.eth.wait_for_transaction_receipt(tx)
+            if receipt['status']!=1:
+                raise ValueError(f"createNftWithErc20WithFixedRate failed in {tx.hex()}")
             #print(receipt)
             logs = self.contract_instance.events.NFTCreated().process_receipt(receipt,errors=DISCARD)
             return logs[0]['args']['newTokenAddress']
@@ -85,14 +85,38 @@ class DataNft:
         )
         self.config = config
     
-    def set_data(self, field_label,field_value):
+    def set_data(self, field_label,field_value,wait_for_receipt=True):
         """Set key/value data via ERC725, with strings for key/value"""
         field_label_hash = Web3.keccak(text=field_label)  # to keccak256 hash
         field_value_bytes = field_value.encode()  # to array of bytes
-        tx = self.contract_instance.functions.setNewData(field_label_hash, field_value_bytes).transact({"from":self.config.owner})
+#        gasPrice = self.config.w3.eth.gas_price
+        call_params = {
+                "from": self.config.owner,
+                "gasPrice": 100000000000,
+                "gas": 100000
+        }
+        tx = self.contract_instance.functions.setNewData(field_label_hash, field_value_bytes).transact(call_params)
+        if wait_for_receipt:
+            self.config.w3.eth.wait_for_transaction_receipt(tx)
         return tx
     
-    def set_ddo(self,ddo):
+    def add_erc20_deployer(self,address,wait_for_receipt=True):
+#        gasPrice = self.config.w3.eth.gas_price
+        call_params = {
+                "from": self.config.owner,
+                "gasPrice": 100000000000,
+        }
+        tx = self.contract_instance.functions.addToCreateERC20List(self.config.w3.to_checksum_address(address)).transact(call_params)
+        if wait_for_receipt:
+            self.config.w3.eth.wait_for_transaction_receipt(tx)
+        return tx
+    
+    def set_ddo(self,ddo,wait_for_receipt=True):
+#        gasPrice = self.config.w3.eth.gas_price
+        call_params = {
+                "from": self.config.owner,
+                "gasPrice": 100000000000,
+        }
         js = json.dumps(ddo)
         stored_ddo=Web3.to_bytes(text=js)
         tx = self.contract_instance.functions.setMetaData(
@@ -103,8 +127,9 @@ class DataNft:
             stored_ddo,
             Web3.to_bytes(hexstr=hashlib.sha256(js.encode("utf-8")).hexdigest()),
             []
-        ).transact({"from":self.config.owner})
-        print(tx)
+        ).transact(call_params)
+        if wait_for_receipt:
+            self.config.w3.eth.wait_for_transaction_receipt(tx)
         return(tx)
 
 def get_address(chain_id,contract_name):
