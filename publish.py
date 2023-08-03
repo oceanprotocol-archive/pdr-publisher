@@ -63,12 +63,11 @@ print("Creating NFT...")
 S_PER_MIN = 60
 S_PER_HOUR = 60 * 60
 # for our ganache, have one epoch per minute (every 60 blocks)
-s_per_block = 1  # depends on the chain
-s_per_epoch = 1 * S_PER_MIN
+s_per_epoch = 5 * S_PER_MIN
 s_per_subscription = 24 * S_PER_HOUR
-min_predns_for_payout = 3  # ideally, 100+
+trueval_submit_timeout = S_PER_HOUR * 24 * 3
 stake_token = OCEAN
-DT_price = 2
+DT_price = 3
 
 # 1st pair:  ETH-USDT on Kraken, 5m
 data_nft = ocean.data_nft_factory.create(
@@ -86,7 +85,7 @@ data_nft.createERC20(
         OCEAN.address,
         OCEAN.address,
     ],
-    [MAX_UINT256, 0, s_per_block, s_per_epoch, s_per_subscription, 30],
+    [MAX_UINT256, 0, s_per_epoch, s_per_subscription, trueval_submit_timeout],
     [],
     {"from": deployer},
 )
@@ -119,7 +118,7 @@ data_nft.createERC20(
         OCEAN.address,
         OCEAN.address,
     ],
-    [MAX_UINT256, 0, s_per_block, s_per_epoch, s_per_subscription, 30],
+    [MAX_UINT256, 0, s_per_epoch, s_per_subscription, trueval_submit_timeout],
     [],
     {"from": deployer},
 )
@@ -151,7 +150,7 @@ data_nft.createERC20(
         OCEAN.address,
         OCEAN.address,
     ],
-    [MAX_UINT256, 0, s_per_block, s_per_epoch, s_per_subscription, 30],
+    [MAX_UINT256, 0, s_per_epoch, s_per_subscription, trueval_submit_timeout],
     [],
     {"from": deployer},
 )
