@@ -63,10 +63,8 @@ print("Creating NFT...")
 S_PER_MIN = 60
 S_PER_HOUR = 60 * 60
 # for our ganache, have one epoch per minute (every 60 blocks)
-s_per_block = 1  # depends on the chain
 s_per_epoch = 1 * S_PER_MIN
 s_per_subscription = 24 * S_PER_HOUR
-min_predns_for_payout = 3  # ideally, 100+
 stake_token = OCEAN
 DT_price = 2
 
